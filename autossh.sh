@@ -2,12 +2,13 @@
 # ------------------------------------------------------------------------------
 # FILE: autossh
 # DESCRIPTION: This is an SSH-D proxy with auto-reconnect on disconnect
-# AUTHOR: Hector Nguyen (hectornguyen at octopius dot com)
-# VERSION: 1.0.0
+# AUTHOR: royalgarter
+# ORIGINAL AUTHOR: Hector Nguyen (hectornguyen at octopius dot com)
+# VERSION: 1.0.1
 # ------------------------------------------------------------------------------
 ARGS=$@
 VERSION="1.0.0"
-GITHUB="https://github.com/hectornguyen/autossh"
+GITHUB="https://github.com/royalgarter/autossh"
 AUTHOR="Hector Nguyen"
 SCRIPT=${0##*/}
 IFS=$'\n'
