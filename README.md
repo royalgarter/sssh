@@ -4,7 +4,7 @@
 # Installation
 
 ```bash
-wget https://raw.github.com/royalgarter/autossh/master/autossh.sh -O /usr/local/bin/autossh
+sudo wget https://raw.github.com/royalgarter/autossh/master/autossh.sh -O /usr/local/bin/autossh;sudo chmod +x /usr/local/bin/autossh
 ```
 # Usage
 
