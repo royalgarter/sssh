@@ -7,13 +7,13 @@
 # VERSION: 1.0.1
 # ------------------------------------------------------------------------------
 ARGS=$@
-VERSION="1.0.0"
+VERSION="1.0.1"
 GITHUB="https://github.com/royalgarter/autossh"
-AUTHOR="Hector Nguyen"
+AUTHOR="royalgarter (inspired by Hector Nguyen)"
 SCRIPT=${0##*/}
 IFS=$'\n'
 ALIVE=0
-# HISTFILE="$HOME/.autossh.history"
+HISTFILE="$HOME/.autossh.history"
 
 # Use colors, but only if connected to a terminal, and that terminal supports them.
 if which tput >/dev/null 2>&1; then
@@ -35,59 +35,13 @@ else
 	NORMAL=""
 fi
 
-# Progress or something
-start_progress() {
-	while true
-	do
-		echo -ne "#"
-		sleep 1
-	done
-}
-
-quick_progress() {
-	while true
-	do
-		echo -ne "#"
-		sleep .033
-	done
-}
-
-long_progress() {
-	while true
-	do
-		echo -ne "#"
-		sleep 3
-	done
-}
-
-dot_progress() {
-	for i in {1..3}; do
-		printf "." $i -1 $i
-		sleep .33
-	done
-	echo_c green " 100%{$NORMAL}"
-	sleep 1
-}
-
-stop_progress() {
-	kill $1
-	wait $1 2>/dev/null
-	echo -en "\n"
-}
-
 # Case-insensitive for regex matching
 shopt -s nocasematch
 
 # Prepare history mode
-set -i
+# set -i
 history -c
 history -r
-
-# Input method
-get_input() {
-	read -e -p "${BLUE}$1${NORMAL}" "$2"
-	history -s "${!2}"
-}
 
 # Echo in bold
 echo_b() {
@@ -111,10 +65,23 @@ echo_c() {
 
 # Get data from parameters
 if [[ ! -n "$remote_param" && -n "$1" ]]; then
-		remote_param="$1"
-		remote_user="${remote_param%%@*}"
-		remote_ip="${remote_param##*@}"
+	remote_param="$1"
+
+	arr=($(echo "$remote_param" | grep -oP "([^@]+)"));
+	if [ "${#arr[@]}" = 2 ]; then
+		remote_user=${arr[0]}
+	else
+		remote_user="root"
+	fi
+
+	remote_ip=${arr[-1]}
 fi
+
+# Input method
+get_input() {
+	read -e -p "${BLUE}$1${NORMAL}" "$2"
+	history -s "${!2}"
+}
 
 # Get input data and save to history
 save_input() {
@@ -149,7 +116,7 @@ save_input() {
 # Infinitie loop to keep connecting
 auto_connect() {
 	while true; do
-		exist=`ps aux | grep "$remote_user@$remote_ip" | grep 22`
+		exist=`ps aux | grep "$remote_ip" | grep 22`
 		if test -n "$exist"
 		then
 			if test $ALIVE -eq 0
@@ -161,9 +128,16 @@ auto_connect() {
 			ALIVE=0
 			echo_c red "Reconnecting ..."
 			clear
+			
 			printf "${GREEN}Connecting: "
-			dot_progress
+			for i in {1..3}; do
+				printf "." $i -1 $i
+				sleep .33
+			done
+			echo_c green " 100%{$NORMAL}"
+			sleep 1
 			clear
+			
 			echo ">ssh ${ARGS[@]}"
 			ssh "${ARGS[@]}"
 		fi
@@ -172,7 +146,7 @@ auto_connect() {
 }
 
 main() {
-	# save_input
+	save_input
 	auto_connect
 }
 
