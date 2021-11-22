@@ -162,12 +162,7 @@ auto_connect() {
 			echo_c red "Reconnecting ..."
 			clear
 			printf "${GREEN}Connecting: "
-			for i in {1..3}; do
-				printf "." $i -1 $i
-				sleep .33
-			done
-			echo_c green " 100%${NORMAL}"
-			sleep 1
+			dot_progress
 			clear
 			echo ">ssh ${ARGS[@]}"
 			ssh "${ARGS[@]}"
