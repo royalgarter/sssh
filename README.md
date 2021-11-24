@@ -11,7 +11,7 @@ sudo apt install screen
 sudo yum install screen
 ```
 
-Linux
+Linux / MacOS
 ```bash
 sudo wget https://raw.github.com/royalgarter/sssh/master/sssh.sh -O /usr/local/bin/sssh;sudo chmod +x /usr/local/bin/sssh
 ```

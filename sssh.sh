@@ -16,6 +16,13 @@ IFS=$'\n'
 ALIVE=0
 HISTFILE="$HOME/.sssh.history"
 
+# Build session name for screen
+SESSION=${COMPUTERNAME:-ssh} # Window
+SESSION=${NAME:-$SESSION} # Linux / MacOS
+SESSION="sssh-${SESSION}" # Build name
+# SESSION="${SESSION//[^a-zA-Z0-9]/}" # Remove weird characters
+SESSION="${SESSION,,}" # Lowercase
+
 # Get data from parameters
 if [[ ! -n "$remote_param" && -n "$1" ]]; then
 	remote_param="$1"
@@ -34,7 +41,7 @@ PARAMS="${ARGS[@]}"
 ARGS_STR="${ARGS// /|}"
 if [[ $ARGS_STR != *" -q "* ]]; then PARAMS="-q $PARAMS"; fi
 if [[ $ARGS_STR != *" -t "* ]]; then PARAMS="-t $PARAMS"; fi
-if [[ $ARGS_STR != *"screen "* ]]; then	PARAMS="$PARAMS \"screen -R sssh\""; fi
+if [[ $ARGS_STR != *"screen "* ]]; then	PARAMS="$PARAMS \"screen -R $SESSION\""; fi
 
 # Use colors, but only if connected to a terminal, and that terminal supports them.
 if which tput >/dev/null 2>&1; then
@@ -124,10 +131,8 @@ save_input() {
 auto_connect() {
 	while true; do
 		exist=`ps aux | grep "$remote_ip" | grep 22`
-		if test -n "$exist"
-		then
-			if test $ALIVE -eq 0
-			then
+		if test -n "$exist"; then
+			if test $ALIVE -eq 0; then
 				echo_c yellow "Connection alive since $(date)"
 			fi
 			ALIVE=1
