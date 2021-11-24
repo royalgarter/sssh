@@ -41,7 +41,7 @@ PARAMS="${ARGS[@]}"
 ARGS_STR="${ARGS// /|}"
 if [[ $ARGS_STR != *" -q "* ]]; then PARAMS="-q $PARAMS"; fi
 if [[ $ARGS_STR != *" -t "* ]]; then PARAMS="-t $PARAMS"; fi
-if [[ $ARGS_STR != *"screen "* ]]; then	PARAMS="$PARAMS \"screen -R $SESSION\""; fi
+if [[ $ARGS_STR != *"screen "* ]]; then	PARAMS="$PARAMS \"screen -DRR $SESSION\""; fi
 
 # Use colors, but only if connected to a terminal, and that terminal supports them.
 if which tput >/dev/null 2>&1; then
