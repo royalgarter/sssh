@@ -127,8 +127,29 @@ save_input() {
 	fi
 }
 
+connect() {
+	ALIVE=0
+	echo_c red "Reconnecting ..."
+	clear
+	
+	echo_b ">>> ssh $PARAMS"
+	echo_b "    EXIT by Screen-Detach then Terminal-Kill: Ctrl-a Ctrl-d Ctrl-c"
+
+	printf "${GREEN}Connecting: "
+	for i in {1..3}; do
+		printf "." $i -1 $i
+		sleep .33
+	done
+	echo_c green " 100%${NORMAL}"
+	sleep 1
+	clear
+	
+	eval ssh $PARAMS
+}
+
 # Infinitie loop to keep connecting
 auto_connect() {
+	connect
 	while true; do
 		exist=`ps aux | grep "$remote_ip" | grep 22`
 		if test -n "$exist"; then
@@ -137,32 +158,18 @@ auto_connect() {
 			fi
 			ALIVE=1
 		else
-			ALIVE=0
-			echo_c red "Reconnecting ..."
-			clear
-			
-			echo_b ">>> ssh $PARAMS"
-			echo_b "    EXIT by Screen-Detach then Terminal-Kill: Ctrl-a Ctrl-d Ctrl-c"
-
-			printf "${GREEN}Connecting: "
-			for i in {1..3}; do
-				printf "." $i -1 $i
-				sleep .33
-			done
-			echo_c green " 100%{$NORMAL}"
-			sleep 1
-			clear
-			
-			eval ssh $PARAMS
+			connect
 		fi
 		sleep 1
 	done
 }
 
-main() {
-	# exit 1
-	save_input
-	auto_connect
+auto_connect_force() {
+	while true; do
+		connect
+		sleep 1
+	done
 }
 
-main
+save_input
+auto_connect_force
